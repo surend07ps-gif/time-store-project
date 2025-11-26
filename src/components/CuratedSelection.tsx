@@ -1,5 +1,10 @@
 import { Link } from "react-router-dom";
+import { useState, useEffect } from "react";
+import { User } from "@supabase/supabase-js";
+import { supabase } from "@/integrations/supabase/client";
 import WatchCard from "./WatchCard";
+import WatchDetailModal from "./WatchDetailModal";
+import { useWishlist } from "@/hooks/useWishlist";
 import watchDiver from "@/assets/watch-diver.jpg";
 import watchDress from "@/assets/watch-dress.jpg";
 import watchSport from "@/assets/watch-sport.jpg";
@@ -77,6 +82,31 @@ const watches = [
 ];
 
 const CuratedSelection = () => {
+  const [user, setUser] = useState<User | null>(null);
+  const [selectedWatch, setSelectedWatch] = useState<typeof watches[0] | null>(null);
+  const [modalOpen, setModalOpen] = useState(false);
+  const { wishlist, toggleWishlist } = useWishlist(user);
+
+  useEffect(() => {
+    supabase.auth.getSession().then(({ data: { session } }) => {
+      setUser(session?.user ?? null);
+    });
+
+    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
+      setUser(session?.user ?? null);
+    });
+
+    return () => subscription.unsubscribe();
+  }, []);
+
+  const handleQuickView = (watchId: number) => {
+    const watch = watches.find((w) => w.id === watchId);
+    if (watch) {
+      setSelectedWatch(watch);
+      setModalOpen(true);
+    }
+  };
+
   return (
     <section className="py-24 bg-background">
       <div className="container mx-auto px-6">
@@ -97,10 +127,24 @@ const CuratedSelection = () => {
         
         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-8">
           {watches.map((watch) => (
-            <WatchCard key={watch.id} {...watch} />
+            <WatchCard 
+              key={watch.id} 
+              {...watch}
+              onQuickView={handleQuickView}
+              onToggleWishlist={toggleWishlist}
+              isInWishlist={wishlist.includes(watch.id)}
+            />
           ))}
         </div>
       </div>
+
+      <WatchDetailModal
+        watch={selectedWatch}
+        open={modalOpen}
+        onOpenChange={setModalOpen}
+        onToggleWishlist={toggleWishlist}
+        isInWishlist={selectedWatch ? wishlist.includes(selectedWatch.id) : false}
+      />
     </section>
   );
 };
