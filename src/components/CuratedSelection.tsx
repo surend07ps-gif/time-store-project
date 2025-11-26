@@ -3,6 +3,12 @@ import WatchCard from "./WatchCard";
 import watchDiver from "@/assets/watch-diver.jpg";
 import watchDress from "@/assets/watch-dress.jpg";
 import watchSport from "@/assets/watch-sport.jpg";
+import watchChronograph from "@/assets/watch-chronograph.jpg";
+import watchSubmariner from "@/assets/watch-submariner.jpg";
+import watchLadies from "@/assets/watch-ladies.jpg";
+import watchSkeleton from "@/assets/watch-skeleton.jpg";
+import watchPilot from "@/assets/watch-pilot.jpg";
+import watchField from "@/assets/watch-field.jpg";
 
 const watches = [
   {
@@ -25,6 +31,48 @@ const watches = [
     category: "SPORT",
     price: 12800,
     image: watchSport,
+  },
+  {
+    id: 4,
+    name: "Speedmaster",
+    category: "CHRONOGRAPH",
+    price: 18900,
+    image: watchChronograph,
+  },
+  {
+    id: 5,
+    name: "Submariner",
+    category: "DIVER",
+    price: 24500,
+    image: watchSubmariner,
+  },
+  {
+    id: 6,
+    name: "Constellation",
+    category: "LADIES",
+    price: 15200,
+    image: watchLadies,
+  },
+  {
+    id: 7,
+    name: "Royal Oak",
+    category: "SKELETON",
+    price: 45000,
+    image: watchSkeleton,
+  },
+  {
+    id: 8,
+    name: "Big Pilot",
+    category: "AVIATION",
+    price: 21500,
+    image: watchPilot,
+  },
+  {
+    id: 9,
+    name: "Ranger",
+    category: "FIELD",
+    price: 8400,
+    image: watchField,
   },
 ];
 
