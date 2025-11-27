@@ -2,12 +2,14 @@ import { Link, useLocation } from "react-router-dom";
 import { useState, useEffect } from "react";
 import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
+import { useAdmin } from "@/hooks/useAdmin";
 import { Button } from "./ui/button";
-import { Heart, LogOut } from "lucide-react";
+import { Heart, LogOut, Settings } from "lucide-react";
 
 const Header = () => {
   const location = useLocation();
   const [user, setUser] = useState<User | null>(null);
+  const { isAdmin } = useAdmin();
 
   useEffect(() => {
     supabase.auth.getSession().then(({ data: { session } }) => {
@@ -74,6 +76,17 @@ const Header = () => {
                   <Heart className="h-4 w-4" />
                   WISHLIST
                 </Link>
+                {isAdmin && (
+                  <Link 
+                    to="/admin"
+                    className={`text-sm tracking-wider transition-colors flex items-center gap-1 ${
+                      isActive("/admin") ? "text-primary" : "text-foreground hover:text-primary"
+                    }`}
+                  >
+                    <Settings className="h-4 w-4" />
+                    ADMIN
+                  </Link>
+                )}
                 <Button variant="ghost" size="sm" onClick={handleSignOut}>
                   <LogOut className="h-4 w-4 mr-1" />
                   Sign Out
