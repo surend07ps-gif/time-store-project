@@ -1,4 +1,5 @@
 import { Button } from "@/components/ui/button";
+import { Link } from "react-router-dom";
 import heroImage from "@/assets/hero-mechanism.jpg";
 
 const Hero = () => {
@@ -32,19 +33,23 @@ const Hero = () => {
           </p>
           
           <div className="flex flex-col sm:flex-row gap-4">
-            <Button 
-              size="lg" 
-              className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-sm tracking-wide transition-all"
-            >
-              EXPLORE COLLECTION
-            </Button>
-            <Button 
-              size="lg" 
-              variant="outline"
-              className="border-border hover:bg-secondary px-8 py-6 text-sm tracking-wide transition-all"
-            >
-              OUR HERITAGE
-            </Button>
+            <Link to="/collection">
+              <Button 
+                size="lg" 
+                className="bg-primary text-primary-foreground hover:bg-primary/90 px-8 py-6 text-sm tracking-wide transition-all w-full sm:w-auto"
+              >
+                EXPLORE COLLECTION
+              </Button>
+            </Link>
+            <Link to="/brands">
+              <Button 
+                size="lg" 
+                variant="outline"
+                className="border-border hover:bg-secondary px-8 py-6 text-sm tracking-wide transition-all w-full sm:w-auto"
+              >
+                BRANDS
+              </Button>
+            </Link>
           </div>
         </div>
       </div>
