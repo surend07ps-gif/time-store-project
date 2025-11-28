@@ -10,6 +10,7 @@ import Footer from "@/components/Footer";
 
 const Auth = () => {
   const [isLogin, setIsLogin] = useState(true);
+  const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
   const [loading, setLoading] = useState(false);
@@ -29,7 +30,17 @@ const Auth = () => {
     setLoading(true);
 
     try {
-      if (isLogin) {
+      if (isForgotPassword) {
+        const { error } = await supabase.auth.resetPasswordForEmail(email, {
+          redirectTo: `${window.location.origin}/auth`,
+        });
+        if (error) throw error;
+        toast({ 
+          title: "Check your email", 
+          description: "We've sent you a password reset link." 
+        });
+        setIsForgotPassword(false);
+      } else if (isLogin) {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
@@ -67,10 +78,12 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="font-display text-4xl mb-2">
-              {isLogin ? "Welcome Back" : "Join Us"}
+              {isForgotPassword ? "Reset Password" : isLogin ? "Welcome Back" : "Join Us"}
             </h1>
             <p className="text-muted-foreground">
-              {isLogin
+              {isForgotPassword
+                ? "Enter your email to receive a password reset link"
+                : isLogin
                 ? "Sign in to access your wishlist"
                 : "Create an account to save your favorite timepieces"}
             </p>
@@ -89,32 +102,64 @@ const Auth = () => {
               />
             </div>
 
-            <div className="space-y-2">
-              <Label htmlFor="password">Password</Label>
-              <Input
-                id="password"
-                type="password"
-                value={password}
-                onChange={(e) => setPassword(e.target.value)}
-                required
-                minLength={6}
-                className="bg-card"
-              />
-            </div>
+            {!isForgotPassword && (
+              <div className="space-y-2">
+                <Label htmlFor="password">Password</Label>
+                <Input
+                  id="password"
+                  type="password"
+                  value={password}
+                  onChange={(e) => setPassword(e.target.value)}
+                  required
+                  minLength={6}
+                  className="bg-card"
+                />
+              </div>
+            )}
+
+            {isLogin && !isForgotPassword && (
+              <div className="text-right">
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPassword(true)}
+                  className="text-sm text-primary hover:underline"
+                >
+                  Forgot password?
+                </button>
+              </div>
+            )}
 
             <Button type="submit" className="w-full" disabled={loading}>
-              {loading ? "Please wait..." : isLogin ? "Sign In" : "Create Account"}
+              {loading 
+                ? "Please wait..." 
+                : isForgotPassword 
+                ? "Send Reset Link" 
+                : isLogin 
+                ? "Sign In" 
+                : "Create Account"}
             </Button>
 
             <p className="text-center text-sm text-muted-foreground">
-              {isLogin ? "Don't have an account? " : "Already have an account? "}
-              <button
-                type="button"
-                onClick={() => setIsLogin(!isLogin)}
-                className="text-primary hover:underline"
-              >
-                {isLogin ? "Sign up" : "Sign in"}
-              </button>
+              {isForgotPassword ? (
+                <button
+                  type="button"
+                  onClick={() => setIsForgotPassword(false)}
+                  className="text-primary hover:underline"
+                >
+                  Back to sign in
+                </button>
+              ) : (
+                <>
+                  {isLogin ? "Don't have an account? " : "Already have an account? "}
+                  <button
+                    type="button"
+                    onClick={() => setIsLogin(!isLogin)}
+                    className="text-primary hover:underline"
+                  >
+                    {isLogin ? "Sign up" : "Sign in"}
+                  </button>
+                </>
+              )}
             </p>
           </form>
         </div>
