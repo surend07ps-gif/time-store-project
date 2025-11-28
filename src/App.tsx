@@ -8,7 +8,10 @@ import Collection from "./pages/Collection";
 import Brands from "./pages/Brands";
 import Auth from "./pages/Auth";
 import Wishlist from "./pages/Wishlist";
-import Admin from "./pages/Admin";
+import AdminLayout from "./components/AdminLayout";
+import Dashboard from "./pages/admin/Dashboard";
+import Watches from "./pages/admin/Watches";
+import UserManagement from "./pages/admin/UserManagement";
 import NotFound from "./pages/NotFound";
 
 const queryClient = new QueryClient();
@@ -25,7 +28,11 @@ const App = () => (
           <Route path="/brands" element={<Brands />} />
           <Route path="/auth" element={<Auth />} />
           <Route path="/wishlist" element={<Wishlist />} />
-          <Route path="/admin" element={<Admin />} />
+          <Route path="/admin" element={<AdminLayout />}>
+            <Route index element={<Dashboard />} />
+            <Route path="watches" element={<Watches />} />
+            <Route path="users" element={<UserManagement />} />
+          </Route>
           {/* ADD ALL CUSTOM ROUTES ABOVE THE CATCH-ALL "*" ROUTE */}
           <Route path="*" element={<NotFound />} />
         </Routes>
