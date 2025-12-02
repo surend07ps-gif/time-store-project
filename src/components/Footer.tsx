@@ -1,8 +1,30 @@
+import { useState } from "react";
+import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
 import { Instagram, Twitter, Facebook } from "lucide-react";
+import { useToast } from "@/hooks/use-toast";
 
 const Footer = () => {
+  const [email, setEmail] = useState("");
+  const { toast } = useToast();
+
+  const handleNewsletterSubmit = (e: React.FormEvent) => {
+    e.preventDefault();
+    if (!email) {
+      toast({
+        title: "Please enter your email",
+        variant: "destructive",
+      });
+      return;
+    }
+    toast({
+      title: "Subscribed!",
+      description: "Thank you for subscribing to our newsletter.",
+    });
+    setEmail("");
+  };
+
   return (
     <footer className="border-t border-border bg-background">
       <div className="container mx-auto px-6 py-16">
@@ -19,50 +41,45 @@ const Footer = () => {
             <h4 className="font-semibold mb-4 tracking-wide">Collection</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+                <Link to="/collection" className="text-muted-foreground hover:text-primary transition-colors">
+                  All Watches
+                </Link>
+              </li>
+              <li>
+                <Link to="/brands" className="text-muted-foreground hover:text-primary transition-colors">
+                  Shop by Brand
+                </Link>
+              </li>
+              <li>
+                <Link to="/collection" className="text-muted-foreground hover:text-primary transition-colors">
                   New Arrivals
-                </a>
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Best Sellers
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Limited Editions
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Accessories
-                </a>
+                <Link to="/wishlist" className="text-muted-foreground hover:text-primary transition-colors">
+                  My Wishlist
+                </Link>
               </li>
             </ul>
           </div>
           
           <div>
-            <h4 className="font-semibold mb-4 tracking-wide">Service</h4>
+            <h4 className="font-semibold mb-4 tracking-wide">Account</h4>
             <ul className="space-y-3">
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Contact Us
-                </a>
+                <Link to="/auth" className="text-muted-foreground hover:text-primary transition-colors">
+                  Sign In
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Shipping & Returns
-                </a>
+                <Link to="/auth" className="text-muted-foreground hover:text-primary transition-colors">
+                  Create Account
+                </Link>
               </li>
               <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Warranty
-                </a>
-              </li>
-              <li>
-                <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
-                  Watch Care
-                </a>
+                <Link to="/wishlist" className="text-muted-foreground hover:text-primary transition-colors">
+                  Wishlist
+                </Link>
               </li>
             </ul>
           </div>
@@ -72,31 +89,33 @@ const Footer = () => {
             <p className="text-muted-foreground mb-4">
               Subscribe to receive updates on new arrivals and exclusive events.
             </p>
-            <div className="flex gap-2">
+            <form onSubmit={handleNewsletterSubmit} className="flex gap-2">
               <Input 
                 type="email" 
                 placeholder="Email Address" 
                 className="bg-secondary border-border"
+                value={email}
+                onChange={(e) => setEmail(e.target.value)}
               />
-              <Button className="bg-primary text-primary-foreground hover:bg-luxury-gold-hover px-8">
+              <Button type="submit" className="bg-primary text-primary-foreground hover:bg-primary/90 px-8">
                 JOIN
               </Button>
-            </div>
+            </form>
           </div>
         </div>
         
         <div className="flex items-center justify-between pt-8 border-t border-border">
           <p className="text-sm text-muted-foreground">
-            © 2024 The Time Store. All rights reserved.
+            © {new Date().getFullYear()} The Time Store. All rights reserved.
           </p>
           <div className="flex gap-6">
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <Twitter className="h-5 w-5" />
             </a>
-            <a href="#" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <Facebook className="h-5 w-5" />
             </a>
           </div>

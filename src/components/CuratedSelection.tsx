@@ -15,76 +15,32 @@ import watchSkeleton from "@/assets/watch-skeleton.jpg";
 import watchPilot from "@/assets/watch-pilot.jpg";
 import watchField from "@/assets/watch-field.jpg";
 
-const watches = [
-  {
-    id: 1,
-    name: "Seamaster Diver",
-    category: "DIVER",
-    price: 5600,
-    image: watchDiver,
-  },
-  {
-    id: 2,
-    name: "Calatrava",
-    category: "DRESS",
-    price: 32500,
-    image: watchDress,
-  },
-  {
-    id: 3,
-    name: "Big Bang",
-    category: "SPORT",
-    price: 12800,
-    image: watchSport,
-  },
-  {
-    id: 4,
-    name: "Speedmaster",
-    category: "CHRONOGRAPH",
-    price: 18900,
-    image: watchChronograph,
-  },
-  {
-    id: 5,
-    name: "Submariner",
-    category: "DIVER",
-    price: 24500,
-    image: watchSubmariner,
-  },
-  {
-    id: 6,
-    name: "Constellation",
-    category: "LADIES",
-    price: 15200,
-    image: watchLadies,
-  },
-  {
-    id: 7,
-    name: "Royal Oak",
-    category: "SKELETON",
-    price: 45000,
-    image: watchSkeleton,
-  },
-  {
-    id: 8,
-    name: "Big Pilot",
-    category: "AVIATION",
-    price: 21500,
-    image: watchPilot,
-  },
-  {
-    id: 9,
-    name: "Ranger",
-    category: "FIELD",
-    price: 8400,
-    image: watchField,
-  },
+const staticWatches = [
+  { id: 1, name: "Seamaster Diver", category: "DIVER", brand: "OMEGA", price: 5600, image: watchDiver },
+  { id: 2, name: "Calatrava", category: "DRESS", brand: "PATEK PHILIPPE", price: 32500, image: watchDress },
+  { id: 3, name: "Big Bang", category: "SPORT", brand: "HUBLOT", price: 12800, image: watchSport },
+  { id: 4, name: "Speedmaster", category: "CHRONOGRAPH", brand: "OMEGA", price: 18900, image: watchChronograph },
+  { id: 5, name: "Submariner", category: "DIVER", brand: "ROLEX", price: 24500, image: watchSubmariner },
+  { id: 6, name: "Constellation", category: "LADIES", brand: "OMEGA", price: 15200, image: watchLadies },
+  { id: 7, name: "Royal Oak", category: "SKELETON", brand: "AUDEMARS PIGUET", price: 45000, image: watchSkeleton },
+  { id: 8, name: "Big Pilot", category: "AVIATION", brand: "IWC", price: 21500, image: watchPilot },
+  { id: 9, name: "Ranger", category: "FIELD", brand: "TUDOR", price: 8400, image: watchField },
 ];
+
+interface Watch {
+  id: number;
+  name: string;
+  category: string;
+  brand: string;
+  price: number;
+  image: string;
+}
 
 const CuratedSelection = () => {
   const [user, setUser] = useState<User | null>(null);
-  const [selectedWatch, setSelectedWatch] = useState<typeof watches[0] | null>(null);
+  const [selectedWatch, setSelectedWatch] = useState<Watch | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [watches, setWatches] = useState<Watch[]>(staticWatches);
   const { wishlist, toggleWishlist } = useWishlist(user);
 
   useEffect(() => {
@@ -97,6 +53,27 @@ const CuratedSelection = () => {
     });
 
     return () => subscription.unsubscribe();
+  }, []);
+
+  useEffect(() => {
+    const fetchWatches = async () => {
+      const { data, error } = await supabase
+        .from("watches")
+        .select("*")
+        .limit(9);
+      
+      if (!error && data && data.length > 0) {
+        setWatches(data.map(w => ({
+          id: w.id,
+          name: w.name,
+          category: w.category?.toUpperCase() || "UNCATEGORIZED",
+          brand: w.brand,
+          price: w.price,
+          image: w.image_url || watchDiver,
+        })));
+      }
+    };
+    fetchWatches();
   }, []);
 
   const handleQuickView = (watchId: number) => {

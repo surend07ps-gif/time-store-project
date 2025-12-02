@@ -21,25 +21,36 @@ import watchField from "@/assets/watch-field.jpg";
 
 const categories = ["DIVER", "DRESS", "SPORT", "CHRONOGRAPH", "LADIES", "SKELETON", "AVIATION", "FIELD", "VINTAGE"];
 
-const allWatches = [
-  { id: 1, name: "Seamaster Diver", category: "DIVER", price: 5600, image: watchDiver },
-  { id: 2, name: "Calatrava", category: "DRESS", price: 32500, image: watchDress },
-  { id: 3, name: "Big Bang", category: "SPORT", price: 12800, image: watchSport },
-  { id: 4, name: "Tank Must", category: "VINTAGE", price: 3200, image: watchVintage },
-  { id: 5, name: "Speedmaster", category: "CHRONOGRAPH", price: 18900, image: watchChronograph },
-  { id: 6, name: "Submariner", category: "DIVER", price: 24500, image: watchSubmariner },
-  { id: 7, name: "Constellation", category: "LADIES", price: 15200, image: watchLadies },
-  { id: 8, name: "Royal Oak", category: "SKELETON", price: 45000, image: watchSkeleton },
-  { id: 9, name: "Big Pilot", category: "AVIATION", price: 21500, image: watchPilot },
-  { id: 10, name: "Ranger", category: "FIELD", price: 8400, image: watchField },
+const staticWatches = [
+  { id: 1, name: "Seamaster Diver", category: "DIVER", brand: "OMEGA", price: 5600, image: watchDiver },
+  { id: 2, name: "Calatrava", category: "DRESS", brand: "PATEK PHILIPPE", price: 32500, image: watchDress },
+  { id: 3, name: "Big Bang", category: "SPORT", brand: "HUBLOT", price: 12800, image: watchSport },
+  { id: 4, name: "Tank Must", category: "VINTAGE", brand: "CARTIER", price: 3200, image: watchVintage },
+  { id: 5, name: "Speedmaster", category: "CHRONOGRAPH", brand: "OMEGA", price: 18900, image: watchChronograph },
+  { id: 6, name: "Submariner", category: "DIVER", brand: "ROLEX", price: 24500, image: watchSubmariner },
+  { id: 7, name: "Constellation", category: "LADIES", brand: "OMEGA", price: 15200, image: watchLadies },
+  { id: 8, name: "Royal Oak", category: "SKELETON", brand: "AUDEMARS PIGUET", price: 45000, image: watchSkeleton },
+  { id: 9, name: "Big Pilot", category: "AVIATION", brand: "IWC", price: 21500, image: watchPilot },
+  { id: 10, name: "Ranger", category: "FIELD", brand: "TUDOR", price: 8400, image: watchField },
 ];
+
+interface Watch {
+  id: number;
+  name: string;
+  category: string;
+  brand: string;
+  price: number;
+  image: string;
+}
 
 const Collection = () => {
   const [user, setUser] = useState<User | null>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>("featured");
-  const [selectedWatch, setSelectedWatch] = useState<typeof allWatches[0] | null>(null);
+  const [selectedWatch, setSelectedWatch] = useState<Watch | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
+  const [watches, setWatches] = useState<Watch[]>(staticWatches);
+  const [loading, setLoading] = useState(true);
   const { wishlist, toggleWishlist } = useWishlist(user);
 
   useEffect(() => {
@@ -54,8 +65,30 @@ const Collection = () => {
     return () => subscription.unsubscribe();
   }, []);
 
+  useEffect(() => {
+    const fetchWatches = async () => {
+      setLoading(true);
+      const { data, error } = await supabase
+        .from("watches")
+        .select("*");
+      
+      if (!error && data && data.length > 0) {
+        setWatches(data.map(w => ({
+          id: w.id,
+          name: w.name,
+          category: w.category?.toUpperCase() || "UNCATEGORIZED",
+          brand: w.brand,
+          price: w.price,
+          image: w.image_url || watchDiver,
+        })));
+      }
+      setLoading(false);
+    };
+    fetchWatches();
+  }, []);
+
   const handleQuickView = (watchId: number) => {
-    const watch = allWatches.find((w) => w.id === watchId);
+    const watch = watches.find((w) => w.id === watchId);
     if (watch) {
       setSelectedWatch(watch);
       setModalOpen(true);
@@ -63,8 +96,8 @@ const Collection = () => {
   };
 
   const filteredWatches = activeFilter
-    ? allWatches.filter((watch) => watch.category === activeFilter)
-    : allWatches;
+    ? watches.filter((watch) => watch.category === activeFilter)
+    : watches;
 
   const sortedWatches = [...filteredWatches].sort((a, b) => {
     if (sortBy === "price-low") return a.price - b.price;
@@ -125,17 +158,32 @@ const Collection = () => {
               </div>
             </div>
             
-            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
-              {sortedWatches.map((watch) => (
-                <WatchCard 
-                  key={watch.id} 
-                  {...watch}
-                  onQuickView={handleQuickView}
-                  onToggleWishlist={toggleWishlist}
-                  isInWishlist={wishlist.includes(watch.id)}
-                />
-              ))}
-            </div>
+            {loading ? (
+              <div className="text-center py-24">
+                <p className="text-muted-foreground">Loading watches...</p>
+              </div>
+            ) : sortedWatches.length === 0 ? (
+              <div className="text-center py-24">
+                <p className="text-muted-foreground text-lg mb-2">
+                  No watches found in {activeFilter} category
+                </p>
+                <p className="text-sm text-muted-foreground">
+                  Try selecting a different category or view all watches
+                </p>
+              </div>
+            ) : (
+              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+                {sortedWatches.map((watch) => (
+                  <WatchCard 
+                    key={watch.id} 
+                    {...watch}
+                    onQuickView={handleQuickView}
+                    onToggleWishlist={toggleWishlist}
+                    isInWishlist={wishlist.includes(watch.id)}
+                  />
+                ))}
+              </div>
+            )}
           </div>
         </section>
       </main>
