@@ -4,13 +4,19 @@ import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import { useAdmin } from "@/hooks/useAdmin";
 import { Button } from "./ui/button";
-import { Heart, LogOut, Settings, Menu, X } from "lucide-react";
+import { Heart, LogOut, Settings, Menu, User as UserIcon } from "lucide-react";
 import {
   Sheet,
   SheetContent,
   SheetTrigger,
-  SheetClose,
 } from "@/components/ui/sheet";
+import {
+  DropdownMenu,
+  DropdownMenuContent,
+  DropdownMenuItem,
+  DropdownMenuSeparator,
+  DropdownMenuTrigger,
+} from "@/components/ui/dropdown-menu";
 
 const Header = () => {
   const location = useLocation();
@@ -69,25 +75,25 @@ const Header = () => {
     </>
   );
 
-  const UserLinks = ({ mobile = false }: { mobile?: boolean }) => (
+  const MobileUserLinks = () => (
     <>
       {user ? (
         <>
           <Link 
             to="/wishlist"
-            onClick={() => mobile && setOpen(false)}
-            className={`text-sm tracking-wider transition-colors flex items-center gap-1 ${
+            onClick={() => setOpen(false)}
+            className={`text-sm tracking-wider transition-colors flex items-center gap-2 ${
               isActive("/wishlist") ? "text-primary" : "text-foreground hover:text-primary"
             }`}
           >
             <Heart className="h-4 w-4" />
             WISHLIST
           </Link>
-          {!adminLoading && isAdmin && (
+          {isAdmin && (
             <Link 
               to="/admin"
-              onClick={() => mobile && setOpen(false)}
-              className={`text-sm tracking-wider transition-colors flex items-center gap-1 animate-in fade-in duration-300 ${
+              onClick={() => setOpen(false)}
+              className={`text-sm tracking-wider transition-colors flex items-center gap-2 ${
                 isActive("/admin") ? "text-primary" : "text-foreground hover:text-primary"
               }`}
             >
@@ -95,13 +101,61 @@ const Header = () => {
               ADMIN
             </Link>
           )}
-          <Button variant="ghost" size="sm" onClick={handleSignOut}>
-            <LogOut className="h-4 w-4 mr-1" />
-            Sign Out
-          </Button>
+          <button 
+            onClick={handleSignOut}
+            className="text-sm tracking-wider transition-colors flex items-center gap-2 text-foreground hover:text-primary"
+          >
+            <LogOut className="h-4 w-4" />
+            SIGN OUT
+          </button>
         </>
       ) : (
-        <Link to="/auth" onClick={() => mobile && setOpen(false)}>
+        <Link to="/auth" onClick={() => setOpen(false)}>
+          <Button variant="outline" size="sm">
+            Sign In
+          </Button>
+        </Link>
+      )}
+    </>
+  );
+
+  const DesktopUserMenu = () => (
+    <>
+      {user ? (
+        <DropdownMenu>
+          <DropdownMenuTrigger asChild>
+            <Button variant="outline" size="sm" className="gap-2">
+              <UserIcon className="h-4 w-4" />
+              Account
+            </Button>
+          </DropdownMenuTrigger>
+          <DropdownMenuContent align="end" className="w-48">
+            <DropdownMenuItem asChild>
+              <Link to="/wishlist" className="flex items-center gap-2 cursor-pointer">
+                <Heart className="h-4 w-4" />
+                Wishlist
+              </Link>
+            </DropdownMenuItem>
+            {isAdmin && (
+              <>
+                <DropdownMenuSeparator />
+                <DropdownMenuItem asChild>
+                  <Link to="/admin" className="flex items-center gap-2 cursor-pointer">
+                    <Settings className="h-4 w-4" />
+                    Admin Panel
+                  </Link>
+                </DropdownMenuItem>
+              </>
+            )}
+            <DropdownMenuSeparator />
+            <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 cursor-pointer">
+              <LogOut className="h-4 w-4" />
+              Sign Out
+            </DropdownMenuItem>
+          </DropdownMenuContent>
+        </DropdownMenu>
+      ) : (
+        <Link to="/auth">
           <Button variant="outline" size="sm">
             Sign In
           </Button>
@@ -124,7 +178,7 @@ const Header = () => {
           </div>
           
           <div className="hidden md:flex items-center gap-4">
-            <UserLinks />
+            <DesktopUserMenu />
           </div>
 
           {/* Mobile Navigation */}
@@ -138,7 +192,7 @@ const Header = () => {
               <nav className="flex flex-col gap-6">
                 <NavLinks mobile />
                 <hr className="border-border" />
-                <UserLinks mobile />
+                <MobileUserLinks />
               </nav>
             </SheetContent>
           </Sheet>
