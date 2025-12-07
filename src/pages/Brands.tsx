@@ -5,6 +5,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WatchCard from "@/components/WatchCard";
 import WatchDetailModal from "@/components/WatchDetailModal";
+import BackToTopButton from "@/components/BackToTopButton";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/hooks/useWishlist";
 import watchDiver from "@/assets/watch-diver.jpg";
@@ -93,67 +94,85 @@ const Brands = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-24">
-        <section className="py-16 bg-background">
-          <div className="container mx-auto px-6">
-            <h1 className="font-display text-6xl mb-4">Prestige Brands</h1>
-            <p className="text-luxury-text-muted text-lg max-w-3xl mb-12">
-              Browse our curated selection from the world's most renowned watchmakers.
-            </p>
+      <main className="pt-20 md:pt-24">
+        <section className="py-6 md:py-16 bg-background">
+          <div className="container mx-auto px-4 md:px-6">
+            {/* Header - Mobile Optimized */}
+            <div className="mb-6 md:mb-12">
+              <h1 className="font-display text-3xl md:text-6xl mb-2 md:mb-4">Prestige Brands</h1>
+              <p className="text-muted-foreground text-sm md:text-lg max-w-3xl">
+                Browse from the world's most renowned watchmakers.
+              </p>
+            </div>
             
-            <div className="mb-16">
-              <div className="flex flex-wrap gap-4 items-center mb-4">
-                <span className="text-sm tracking-wider font-semibold">TOP BRANDS:</span>
-                <Button
-                  variant="outline"
-                  onClick={() => setActiveBrand(null)}
-                  className={`border-border hover:border-primary hover:text-primary ${
-                    !activeBrand ? "border-primary text-primary" : ""
-                  }`}
-                >
-                  ALL
-                </Button>
-                {topBrands.map((brand) => (
+            {/* Brand Filters - Mobile Optimized */}
+            <div className="mb-6 md:mb-16">
+              {/* Top Brands - Horizontal scroll on mobile */}
+              <div className="mb-4">
+                <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase mb-2 block">
+                  Top Brands
+                </span>
+                <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap scrollbar-hide">
                   <Button
-                    key={brand}
                     variant="outline"
-                    onClick={() => setActiveBrand(activeBrand === brand ? null : brand)}
-                    className={`border-border hover:border-primary hover:text-primary ${
-                      activeBrand === brand ? "border-primary text-primary" : ""
+                    size="sm"
+                    onClick={() => setActiveBrand(null)}
+                    className={`shrink-0 h-8 text-xs md:text-sm px-3 md:px-4 ${
+                      !activeBrand ? "border-primary text-primary bg-primary/10" : ""
                     }`}
                   >
-                    {brand}
+                    ALL
                   </Button>
-                ))}
+                  {topBrands.map((brand) => (
+                    <Button
+                      key={brand}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setActiveBrand(activeBrand === brand ? null : brand)}
+                      className={`shrink-0 h-8 text-xs md:text-sm px-3 md:px-4 ${
+                        activeBrand === brand ? "border-primary text-primary bg-primary/10" : ""
+                      }`}
+                    >
+                      {brand}
+                    </Button>
+                  ))}
+                </div>
               </div>
               
-              <div className="flex flex-wrap gap-4">
-                {otherBrands.map((brand) => (
-                  <Button
-                    key={brand}
-                    variant="outline"
-                    onClick={() => setActiveBrand(activeBrand === brand ? null : brand)}
-                    className={`border-border hover:border-primary hover:text-primary ${
-                      activeBrand === brand ? "border-primary text-primary" : ""
-                    }`}
-                  >
-                    {brand}
-                  </Button>
-                ))}
+              {/* Other Brands */}
+              <div>
+                <span className="text-xs font-medium tracking-wider text-muted-foreground uppercase mb-2 block">
+                  Other Brands
+                </span>
+                <div className="flex gap-2 overflow-x-auto pb-2 -mx-4 px-4 md:mx-0 md:px-0 md:flex-wrap scrollbar-hide">
+                  {otherBrands.map((brand) => (
+                    <Button
+                      key={brand}
+                      variant="outline"
+                      size="sm"
+                      onClick={() => setActiveBrand(activeBrand === brand ? null : brand)}
+                      className={`shrink-0 h-8 text-xs md:text-sm px-3 md:px-4 ${
+                        activeBrand === brand ? "border-primary text-primary bg-primary/10" : ""
+                      }`}
+                    >
+                      {brand}
+                    </Button>
+                  ))}
+                </div>
               </div>
             </div>
             
             {filteredWatches.length === 0 ? (
-              <div className="text-center py-24">
-                <p className="text-muted-foreground text-lg mb-2">
+              <div className="text-center py-16 md:py-24">
+                <p className="text-muted-foreground text-base md:text-lg mb-2">
                   No watches found for {activeBrand}
                 </p>
-                <p className="text-sm text-muted-foreground">
+                <p className="text-xs md:text-sm text-muted-foreground">
                   Try selecting a different brand or view all watches
                 </p>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
                 {filteredWatches.map((watch) => (
                   <WatchCard 
                     key={watch.id} 
@@ -171,6 +190,7 @@ const Brands = () => {
       </main>
       
       <Footer />
+      <BackToTopButton />
 
       <WatchDetailModal
         watch={selectedWatch}

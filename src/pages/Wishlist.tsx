@@ -6,6 +6,7 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 import WatchCard from "@/components/WatchCard";
 import WatchDetailModal from "@/components/WatchDetailModal";
+import BackToTopButton from "@/components/BackToTopButton";
 import { Button } from "@/components/ui/button";
 import { useWishlist } from "@/hooks/useWishlist";
 import watchDiver from "@/assets/watch-diver.jpg";
@@ -111,28 +112,31 @@ const Wishlist = () => {
     <div className="min-h-screen bg-background">
       <Header />
       
-      <main className="pt-24">
-        <section className="py-16 bg-background">
-          <div className="container mx-auto px-6">
-            <h1 className="font-display text-6xl mb-4">Your Wishlist</h1>
-            <p className="text-luxury-text-muted text-lg max-w-3xl mb-12">
-              Your collection of favorite timepieces awaits.
-            </p>
+      <main className="pt-20 md:pt-24">
+        <section className="py-6 md:py-16 bg-background">
+          <div className="container mx-auto px-4 md:px-6">
+            {/* Header - Mobile Optimized */}
+            <div className="mb-6 md:mb-12">
+              <h1 className="font-display text-3xl md:text-6xl mb-2 md:mb-4">Your Wishlist</h1>
+              <p className="text-muted-foreground text-sm md:text-lg max-w-3xl">
+                Your collection of favorite timepieces awaits.
+              </p>
+            </div>
             
             {wishlistWatches.length === 0 ? (
-              <div className="text-center py-24">
-                <p className="text-muted-foreground text-lg mb-4">
+              <div className="text-center py-16 md:py-24">
+                <p className="text-muted-foreground text-base md:text-lg mb-3 md:mb-4">
                   Your wishlist is empty
                 </p>
-                <p className="text-sm text-muted-foreground mb-6">
+                <p className="text-xs md:text-sm text-muted-foreground mb-5 md:mb-6">
                   Explore our collection and add your favorite watches
                 </p>
                 <Link to="/collection">
-                  <Button>Browse Collection</Button>
+                  <Button size="sm" className="md:size-default">Browse Collection</Button>
                 </Link>
               </div>
             ) : (
-              <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-8">
+              <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-4 gap-3 md:gap-8">
                 {wishlistWatches.map((watch) => (
                   <WatchCard 
                     key={watch.id} 
@@ -150,6 +154,7 @@ const Wishlist = () => {
       </main>
       
       <Footer />
+      <BackToTopButton />
 
       <WatchDetailModal
         watch={selectedWatch}

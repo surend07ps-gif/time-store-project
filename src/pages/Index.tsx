@@ -2,6 +2,7 @@ import Header from "@/components/Header";
 import Hero from "@/components/Hero";
 import CuratedSelection from "@/components/CuratedSelection";
 import Footer from "@/components/Footer";
+import BackToTopButton from "@/components/BackToTopButton";
 
 const Index = () => {
   return (
@@ -10,6 +11,7 @@ const Index = () => {
       <Hero />
       <CuratedSelection />
       <Footer />
+      <BackToTopButton />
     </div>
   );
 };
