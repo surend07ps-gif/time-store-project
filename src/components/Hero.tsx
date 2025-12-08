@@ -4,7 +4,7 @@ import heroImage from "@/assets/hero-mechanism.jpg";
 
 const Hero = () => {
   return (
-    <section className="relative min-h-[70vh] md:min-h-screen flex items-center">
+    <section className="relative min-h-screen flex items-center">
       <div 
         className="absolute inset-0 z-0"
         style={{
