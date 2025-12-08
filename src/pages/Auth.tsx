@@ -9,7 +9,6 @@ import Header from "@/components/Header";
 import Footer from "@/components/Footer";
 
 const Auth = () => {
-  const [isLogin, setIsLogin] = useState(true);
   const [isForgotPassword, setIsForgotPassword] = useState(false);
   const [email, setEmail] = useState("");
   const [password, setPassword] = useState("");
@@ -40,25 +39,14 @@ const Auth = () => {
           description: "We've sent you a password reset link." 
         });
         setIsForgotPassword(false);
-      } else if (isLogin) {
+      } else {
         const { error } = await supabase.auth.signInWithPassword({
           email,
           password,
         });
         if (error) throw error;
-        toast({ title: "Welcome back!" });
-        navigate("/");
-      } else {
-        const { error } = await supabase.auth.signUp({
-          email,
-          password,
-          options: {
-            emailRedirectTo: `${window.location.origin}/`,
-          },
-        });
-        if (error) throw error;
-        toast({ title: "Account created! Welcome to our collection." });
-        navigate("/");
+        toast({ title: "Welcome back, Admin!" });
+        navigate("/admin");
       }
     } catch (error: any) {
       toast({
@@ -78,14 +66,12 @@ const Auth = () => {
         <div className="w-full max-w-md">
           <div className="text-center mb-8">
             <h1 className="font-display text-4xl mb-2">
-              {isForgotPassword ? "Reset Password" : isLogin ? "Welcome Back" : "Join Us"}
+              {isForgotPassword ? "Reset Password" : "Admin Login"}
             </h1>
             <p className="text-muted-foreground">
               {isForgotPassword
                 ? "Enter your email to receive a password reset link"
-                : isLogin
-                ? "Sign in to access your wishlist"
-                : "Create an account to save your favorite timepieces"}
+                : "Sign in to access the admin panel"}
             </p>
           </div>
 
@@ -117,7 +103,7 @@ const Auth = () => {
               </div>
             )}
 
-            {isLogin && !isForgotPassword && (
+            {!isForgotPassword && (
               <div className="text-right">
                 <button
                   type="button"
@@ -134,13 +120,11 @@ const Auth = () => {
                 ? "Please wait..." 
                 : isForgotPassword 
                 ? "Send Reset Link" 
-                : isLogin 
-                ? "Sign In" 
-                : "Create Account"}
+                : "Sign In"}
             </Button>
 
-            <p className="text-center text-sm text-muted-foreground">
-              {isForgotPassword ? (
+            {isForgotPassword && (
+              <p className="text-center text-sm text-muted-foreground">
                 <button
                   type="button"
                   onClick={() => setIsForgotPassword(false)}
@@ -148,19 +132,8 @@ const Auth = () => {
                 >
                   Back to sign in
                 </button>
-              ) : (
-                <>
-                  {isLogin ? "Don't have an account? " : "Already have an account? "}
-                  <button
-                    type="button"
-                    onClick={() => setIsLogin(!isLogin)}
-                    className="text-primary hover:underline"
-                  >
-                    {isLogin ? "Sign up" : "Sign in"}
-                  </button>
-                </>
-              )}
-            </p>
+              </p>
+            )}
           </form>
         </div>
       </main>
