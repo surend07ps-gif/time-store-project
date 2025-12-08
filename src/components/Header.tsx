@@ -77,30 +77,18 @@ const Header = () => {
 
   const MobileUserLinks = () => (
     <>
-      {user ? (
+      {user && isAdmin ? (
         <>
           <Link 
-            to="/wishlist"
+            to="/admin"
             onClick={() => setOpen(false)}
             className={`text-sm tracking-wider transition-colors flex items-center gap-2 ${
-              isActive("/wishlist") ? "text-primary" : "text-foreground hover:text-primary"
+              isActive("/admin") ? "text-primary" : "text-foreground hover:text-primary"
             }`}
           >
-            <Heart className="h-4 w-4" />
-            WISHLIST
+            <Settings className="h-4 w-4" />
+            ADMIN
           </Link>
-          {isAdmin && (
-            <Link 
-              to="/admin"
-              onClick={() => setOpen(false)}
-              className={`text-sm tracking-wider transition-colors flex items-center gap-2 ${
-                isActive("/admin") ? "text-primary" : "text-foreground hover:text-primary"
-              }`}
-            >
-              <Settings className="h-4 w-4" />
-              ADMIN
-            </Link>
-          )}
           <button 
             onClick={handleSignOut}
             className="text-sm tracking-wider transition-colors flex items-center gap-2 text-foreground hover:text-primary"
@@ -109,44 +97,33 @@ const Header = () => {
             SIGN OUT
           </button>
         </>
-      ) : (
+      ) : !user ? (
         <Link to="/auth" onClick={() => setOpen(false)}>
           <Button variant="outline" size="sm">
-            Sign In
+            Admin Login
           </Button>
         </Link>
-      )}
+      ) : null}
     </>
   );
 
   const DesktopUserMenu = () => (
     <>
-      {user ? (
+      {user && isAdmin ? (
         <DropdownMenu>
           <DropdownMenuTrigger asChild>
             <Button variant="outline" size="sm" className="gap-2">
-              <UserIcon className="h-4 w-4" />
-              Account
+              <Settings className="h-4 w-4" />
+              Admin
             </Button>
           </DropdownMenuTrigger>
           <DropdownMenuContent align="end" className="w-48">
             <DropdownMenuItem asChild>
-              <Link to="/wishlist" className="flex items-center gap-2 cursor-pointer">
-                <Heart className="h-4 w-4" />
-                Wishlist
+              <Link to="/admin" className="flex items-center gap-2 cursor-pointer">
+                <Settings className="h-4 w-4" />
+                Admin Panel
               </Link>
             </DropdownMenuItem>
-            {isAdmin && (
-              <>
-                <DropdownMenuSeparator />
-                <DropdownMenuItem asChild>
-                  <Link to="/admin" className="flex items-center gap-2 cursor-pointer">
-                    <Settings className="h-4 w-4" />
-                    Admin Panel
-                  </Link>
-                </DropdownMenuItem>
-              </>
-            )}
             <DropdownMenuSeparator />
             <DropdownMenuItem onClick={handleSignOut} className="flex items-center gap-2 cursor-pointer">
               <LogOut className="h-4 w-4" />
@@ -154,13 +131,13 @@ const Header = () => {
             </DropdownMenuItem>
           </DropdownMenuContent>
         </DropdownMenu>
-      ) : (
+      ) : !user ? (
         <Link to="/auth">
           <Button variant="outline" size="sm">
-            Sign In
+            Admin Login
           </Button>
         </Link>
-      )}
+      ) : null}
     </>
   );
 
