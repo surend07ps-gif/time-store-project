@@ -5,6 +5,7 @@ import { supabase } from "@/integrations/supabase/client";
 import WatchCard from "./WatchCard";
 import WatchCardSkeleton from "./WatchCardSkeleton";
 import WatchDetailModal from "./WatchDetailModal";
+import ScrollReveal from "./ScrollReveal";
 import { useWishlist } from "@/hooks/useWishlist";
 import watchDiver from "@/assets/watch-diver.jpg";
 import watchDress from "@/assets/watch-dress.jpg";
@@ -92,20 +93,22 @@ const CuratedSelection = () => {
     <section className="py-10 md:py-24 bg-background">
       <div className="container mx-auto px-4 md:px-6">
         {/* Section Header */}
-        <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-12 gap-3 md:gap-4">
-          <div className="text-center md:text-left">
-            <h2 className="font-display text-2xl md:text-5xl mb-1 md:mb-4">Curated Selection</h2>
-            <p className="text-muted-foreground text-xs md:text-base">
-              Handpicked for their exceptional craftsmanship.
-            </p>
+        <ScrollReveal variant="fadeUp">
+          <div className="flex flex-col md:flex-row md:items-end justify-between mb-6 md:mb-12 gap-3 md:gap-4">
+            <div className="text-center md:text-left">
+              <h2 className="font-display text-2xl md:text-5xl mb-1 md:mb-4">Curated Selection</h2>
+              <p className="text-muted-foreground text-xs md:text-base">
+                Handpicked for their exceptional craftsmanship.
+              </p>
+            </div>
+            <Link 
+              to="/collection" 
+              className="text-primary hover:text-luxury-gold-hover transition-colors tracking-wide text-xs md:text-base text-center md:text-right"
+            >
+              View All →
+            </Link>
           </div>
-          <Link 
-            to="/collection" 
-            className="text-primary hover:text-luxury-gold-hover transition-colors tracking-wide text-xs md:text-base text-center md:text-right"
-          >
-            View All →
-          </Link>
-        </div>
+        </ScrollReveal>
         
         {/* Watch Grid */}
         {loading ? (
@@ -116,15 +119,16 @@ const CuratedSelection = () => {
           </div>
         ) : (
           <div className="grid grid-cols-2 md:grid-cols-2 lg:grid-cols-3 gap-3 md:gap-8">
-            {watches.slice(0, 6).map((watch) => (
-              <WatchCard 
-                key={watch.id} 
-                {...watch}
-                onQuickView={handleQuickView}
-                onToggleWishlist={toggleWishlist}
-                isInWishlist={wishlist.includes(watch.id)}
-                isAuthenticated={!!user}
-              />
+            {watches.slice(0, 6).map((watch, index) => (
+              <ScrollReveal key={watch.id} variant="fadeUp" delay={index * 0.1}>
+                <WatchCard 
+                  {...watch}
+                  onQuickView={handleQuickView}
+                  onToggleWishlist={toggleWishlist}
+                  isInWishlist={wishlist.includes(watch.id)}
+                  isAuthenticated={!!user}
+                />
+              </ScrollReveal>
             ))}
           </div>
         )}
