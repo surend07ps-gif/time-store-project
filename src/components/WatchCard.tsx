@@ -1,7 +1,7 @@
 import { useState } from "react";
-import { Heart, Eye } from "lucide-react";
+import { Eye, Phone } from "lucide-react";
 import { Button } from "./ui/button";
-import AuthPromptDialog from "./AuthPromptDialog";
+import ContactPurchaseDialog from "./ContactPurchaseDialog";
 
 interface WatchCardProps {
   id: number;
@@ -10,9 +10,6 @@ interface WatchCardProps {
   price: number;
   image: string;
   onQuickView: (id: number) => void;
-  onToggleWishlist: (id: number) => void;
-  isInWishlist: boolean;
-  isAuthenticated?: boolean;
 }
 
 const WatchCard = ({ 
@@ -22,19 +19,12 @@ const WatchCard = ({
   price, 
   image,
   onQuickView,
-  onToggleWishlist,
-  isInWishlist,
-  isAuthenticated = false
 }: WatchCardProps) => {
-  const [authDialogOpen, setAuthDialogOpen] = useState(false);
+  const [contactDialogOpen, setContactDialogOpen] = useState(false);
 
-  const handleWishlistClick = (e: React.MouseEvent) => {
+  const handleContactClick = (e: React.MouseEvent) => {
     e.stopPropagation();
-    if (!isAuthenticated) {
-      setAuthDialogOpen(true);
-      return;
-    }
-    onToggleWishlist(id);
+    setContactDialogOpen(true);
   };
 
   return (
@@ -71,13 +61,10 @@ const WatchCard = ({
               <Button
                 size="sm"
                 variant="outline"
-                onClick={handleWishlistClick}
+                onClick={handleContactClick}
               >
-                <Heart
-                  className={`h-4 w-4 ${
-                    isInWishlist ? "fill-current text-primary" : ""
-                  }`}
-                />
+                <Phone className="mr-2 h-4 w-4" />
+                Contact
               </Button>
             </div>
           </div>
@@ -99,13 +86,9 @@ const WatchCard = ({
               size="icon"
               variant="secondary"
               className="h-8 w-8 bg-background/90 backdrop-blur-sm"
-              onClick={handleWishlistClick}
+              onClick={handleContactClick}
             >
-              <Heart
-                className={`h-3.5 w-3.5 ${
-                  isInWishlist ? "fill-current text-primary" : ""
-                }`}
-              />
+              <Phone className="h-3.5 w-3.5" />
             </Button>
           </div>
         </div>
@@ -119,11 +102,10 @@ const WatchCard = ({
         </div>
       </div>
 
-      <AuthPromptDialog 
-        open={authDialogOpen} 
-        onOpenChange={setAuthDialogOpen}
-        title="Sign In Required"
-        description="Please sign in to add items to your wishlist."
+      <ContactPurchaseDialog 
+        open={contactDialogOpen} 
+        onOpenChange={setContactDialogOpen}
+        watchName={name}
       />
     </>
   );

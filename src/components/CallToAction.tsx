@@ -26,7 +26,7 @@ const CallToAction = () => {
         </ScrollReveal>
         
         <ScrollReveal variant="fadeUp" delay={0.2}>
-          <div className="flex flex-col sm:flex-row gap-3 md:gap-4 justify-center max-w-sm mx-auto">
+          <div className="flex justify-center max-w-sm mx-auto">
             <Link to="/collection" className="w-full sm:w-auto">
               <Button 
                 size="lg" 

@@ -12,7 +12,6 @@ import Index from "./pages/Index";
 import Collection from "./pages/Collection";
 import Brands from "./pages/Brands";
 import Auth from "./pages/Auth";
-import Wishlist from "./pages/Wishlist";
 import AdminLayout from "./components/AdminLayout";
 import Dashboard from "./pages/admin/Dashboard";
 import Watches from "./pages/admin/Watches";
@@ -31,7 +30,6 @@ const AnimatedRoutes = () => {
         <Route path="/collection" element={<PageTransition><Collection /></PageTransition>} />
         <Route path="/brands" element={<PageTransition><Brands /></PageTransition>} />
         <Route path="/auth" element={<PageTransition><Auth /></PageTransition>} />
-        <Route path="/wishlist" element={<PageTransition><Wishlist /></PageTransition>} />
         <Route path="/admin" element={<AdminLayout />}>
           <Route index element={<Dashboard />} />
           <Route path="watches" element={<Watches />} />

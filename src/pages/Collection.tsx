@@ -1,5 +1,4 @@
 import { useState, useEffect, useCallback } from "react";
-import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -11,7 +10,6 @@ import PullToRefresh from "@/components/PullToRefresh";
 import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { useWishlist } from "@/hooks/useWishlist";
 import watchDiver from "@/assets/watch-diver.jpg";
 import watchDress from "@/assets/watch-dress.jpg";
 import watchSport from "@/assets/watch-sport.jpg";
@@ -48,7 +46,6 @@ interface Watch {
 }
 
 const Collection = () => {
-  const [user, setUser] = useState<User | null>(null);
   const [activeFilter, setActiveFilter] = useState<string | null>(null);
   const [sortBy, setSortBy] = useState<string>("featured");
   const [searchQuery, setSearchQuery] = useState("");
@@ -56,19 +53,6 @@ const Collection = () => {
   const [modalOpen, setModalOpen] = useState(false);
   const [watches, setWatches] = useState<Watch[]>(staticWatches);
   const [loading, setLoading] = useState(true);
-  const { wishlist, toggleWishlist } = useWishlist(user);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   const fetchWatches = useCallback(async () => {
     setLoading(true);
@@ -148,9 +132,6 @@ const Collection = () => {
               key={watch.id} 
               {...watch}
               onQuickView={handleQuickView}
-              onToggleWishlist={toggleWishlist}
-              isInWishlist={wishlist.includes(watch.id)}
-              isAuthenticated={!!user}
             />
           ))}
         </div>
@@ -265,9 +246,6 @@ const Collection = () => {
         watch={selectedWatch}
         open={modalOpen}
         onOpenChange={setModalOpen}
-        onToggleWishlist={toggleWishlist}
-        isInWishlist={selectedWatch ? wishlist.includes(selectedWatch.id) : false}
-        isAuthenticated={!!user}
       />
     </div>
   );

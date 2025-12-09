@@ -1,5 +1,4 @@
 import { useState, useEffect } from "react";
-import { User } from "@supabase/supabase-js";
 import { supabase } from "@/integrations/supabase/client";
 import Header from "@/components/Header";
 import Footer from "@/components/Footer";
@@ -9,7 +8,6 @@ import WatchDetailModal from "@/components/WatchDetailModal";
 import BackToTopButton from "@/components/BackToTopButton";
 import SearchBar from "@/components/SearchBar";
 import { Button } from "@/components/ui/button";
-import { useWishlist } from "@/hooks/useWishlist";
 import watchDiver from "@/assets/watch-diver.jpg";
 import watchDress from "@/assets/watch-dress.jpg";
 import watchSport from "@/assets/watch-sport.jpg";
@@ -40,26 +38,12 @@ interface Watch {
 }
 
 const Brands = () => {
-  const [user, setUser] = useState<User | null>(null);
   const [activeBrand, setActiveBrand] = useState<string | null>(null);
   const [searchQuery, setSearchQuery] = useState("");
   const [selectedWatch, setSelectedWatch] = useState<Watch | null>(null);
   const [modalOpen, setModalOpen] = useState(false);
   const [watches, setWatches] = useState<Watch[]>(staticWatches);
   const [loading, setLoading] = useState(true);
-  const { wishlist, toggleWishlist } = useWishlist(user);
-
-  useEffect(() => {
-    supabase.auth.getSession().then(({ data: { session } }) => {
-      setUser(session?.user ?? null);
-    });
-
-    const { data: { subscription } } = supabase.auth.onAuthStateChange((_event, session) => {
-      setUser(session?.user ?? null);
-    });
-
-    return () => subscription.unsubscribe();
-  }, []);
 
   useEffect(() => {
     const fetchWatches = async () => {
@@ -205,9 +189,6 @@ const Brands = () => {
                     key={watch.id} 
                     {...watch}
                     onQuickView={handleQuickView}
-                    onToggleWishlist={toggleWishlist}
-                    isInWishlist={wishlist.includes(watch.id)}
-                    isAuthenticated={!!user}
                   />
                 ))}
               </div>
@@ -223,9 +204,6 @@ const Brands = () => {
         watch={selectedWatch}
         open={modalOpen}
         onOpenChange={setModalOpen}
-        onToggleWishlist={toggleWishlist}
-        isInWishlist={selectedWatch ? wishlist.includes(selectedWatch.id) : false}
-        isAuthenticated={!!user}
       />
     </div>
   );
