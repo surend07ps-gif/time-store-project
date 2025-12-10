@@ -59,7 +59,7 @@ const WatchDetailModal = ({
                 {watch.category}
               </p>
               <p className="text-3xl font-semibold text-foreground">
-                ${watch.price.toLocaleString()}
+                ₹{watch.price.toLocaleString('en-IN')}
               </p>
             </div>
 

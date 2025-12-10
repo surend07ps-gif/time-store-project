@@ -5,7 +5,7 @@ import { Input } from "@/components/ui/input";
 import { Textarea } from "@/components/ui/textarea";
 import { Card, CardContent, CardDescription, CardHeader, CardTitle } from "@/components/ui/card";
 import { useToast } from "@/hooks/use-toast";
-import { Pencil, Trash2, Plus } from "lucide-react";
+import { Pencil, Trash2, Plus, Upload, X } from "lucide-react";
 
 interface Watch {
   id: number;
@@ -26,6 +26,8 @@ const Watches = () => {
   const [loading, setLoading] = useState(true);
   const [editingWatch, setEditingWatch] = useState<Watch | null>(null);
   const [isCreating, setIsCreating] = useState(false);
+  const [uploading, setUploading] = useState(false);
+  const [imagePreview, setImagePreview] = useState<string | null>(null);
   
   const [formData, setFormData] = useState({
     name: "",
@@ -82,6 +84,69 @@ const Watches = () => {
     });
     setEditingWatch(null);
     setIsCreating(false);
+    setImagePreview(null);
+  };
+
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (!file) return;
+
+    // Validate file type
+    if (!file.type.startsWith('image/')) {
+      toast({
+        title: "Error",
+        description: "Please upload an image file.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    // Validate file size (max 5MB)
+    if (file.size > 5 * 1024 * 1024) {
+      toast({
+        title: "Error",
+        description: "Image size should be less than 5MB.",
+        variant: "destructive",
+      });
+      return;
+    }
+
+    setUploading(true);
+
+    try {
+      const fileExt = file.name.split('.').pop();
+      const fileName = `${Date.now()}-${Math.random().toString(36).substring(7)}.${fileExt}`;
+      const filePath = `watches/${fileName}`;
+
+      const { error: uploadError } = await supabase.storage
+        .from('watch-images')
+        .upload(filePath, file);
+
+      if (uploadError) throw uploadError;
+
+      const { data: { publicUrl } } = supabase.storage
+        .from('watch-images')
+        .getPublicUrl(filePath);
+
+      setFormData({ ...formData, image_url: publicUrl });
+      setImagePreview(publicUrl);
+      
+      toast({ title: "Success", description: "Image uploaded successfully!" });
+    } catch (error) {
+      console.error("Error uploading image:", error);
+      toast({
+        title: "Error",
+        description: "Failed to upload image.",
+        variant: "destructive",
+      });
+    } finally {
+      setUploading(false);
+    }
+  };
+
+  const removeImage = () => {
+    setFormData({ ...formData, image_url: "" });
+    setImagePreview(null);
   };
 
   const handleSubmit = async (e: React.FormEvent) => {
@@ -134,6 +199,7 @@ const Watches = () => {
       case_size: watch.case_size || "",
       water_resistance: watch.water_resistance || "",
     });
+    setImagePreview(watch.image_url || null);
   };
 
   const handleDelete = async (id: number) => {
@@ -250,13 +316,56 @@ const Watches = () => {
                     onChange={handleInputChange}
                   />
                 </div>
-                <div>
-                  <label className="block text-sm font-medium mb-2">Image URL</label>
-                  <Input
-                    name="image_url"
-                    value={formData.image_url}
-                    onChange={handleInputChange}
-                  />
+                <div className="md:col-span-2">
+                  <label className="block text-sm font-medium mb-2">Watch Image</label>
+                  <div className="space-y-4">
+                    {(imagePreview || formData.image_url) && (
+                      <div className="relative w-32 h-32">
+                        <img 
+                          src={imagePreview || formData.image_url} 
+                          alt="Watch preview" 
+                          className="w-full h-full object-cover rounded-lg border"
+                        />
+                        <Button
+                          type="button"
+                          size="icon"
+                          variant="destructive"
+                          className="absolute -top-2 -right-2 h-6 w-6"
+                          onClick={removeImage}
+                        >
+                          <X className="h-3 w-3" />
+                        </Button>
+                      </div>
+                    )}
+                    <div className="flex gap-4">
+                      <div className="flex-1">
+                        <Input
+                          name="image_url"
+                          placeholder="Or enter image URL"
+                          value={formData.image_url}
+                          onChange={(e) => {
+                            handleInputChange(e);
+                            setImagePreview(e.target.value || null);
+                          }}
+                        />
+                      </div>
+                      <label className="cursor-pointer">
+                        <input
+                          type="file"
+                          accept="image/*"
+                          className="hidden"
+                          onChange={handleImageUpload}
+                          disabled={uploading}
+                        />
+                        <Button type="button" variant="outline" disabled={uploading} asChild>
+                          <span>
+                            <Upload className="h-4 w-4 mr-2" />
+                            {uploading ? "Uploading..." : "Upload"}
+                          </span>
+                        </Button>
+                      </label>
+                    </div>
+                  </div>
                 </div>
               </div>
               <div>
@@ -297,7 +406,7 @@ const Watches = () => {
                     </div>
                     <div>
                       <span className="text-muted-foreground">Price:</span>{" "}
-                      <span className="font-medium">${watch.price.toLocaleString()}</span>
+                      <span className="font-medium">₹{watch.price.toLocaleString('en-IN')}</span>
                     </div>
                     {watch.category && (
                       <div>

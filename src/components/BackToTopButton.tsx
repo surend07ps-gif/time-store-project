@@ -31,7 +31,7 @@ const BackToTopButton = () => {
     <Button
       onClick={scrollToTop}
       size="icon"
-      className="fixed bottom-6 right-4 z-50 md:hidden h-12 w-12 rounded-full bg-primary text-primary-foreground shadow-lg hover:bg-primary/90 transition-all duration-300 animate-fade-in"
+      className="fixed bottom-24 right-6 z-40 md:hidden h-12 w-12 rounded-full bg-secondary text-secondary-foreground shadow-lg hover:bg-secondary/90 transition-all duration-300 animate-fade-in"
       aria-label="Back to top"
     >
       <ChevronUp className="h-6 w-6" />

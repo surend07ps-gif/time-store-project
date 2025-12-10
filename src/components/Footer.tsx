@@ -2,7 +2,7 @@ import { useState } from "react";
 import { Link } from "react-router-dom";
 import { Input } from "@/components/ui/input";
 import { Button } from "@/components/ui/button";
-import { Instagram, Twitter, Facebook } from "lucide-react";
+import { Instagram, Mail } from "lucide-react";
 import { useToast } from "@/hooks/use-toast";
 
 const Footer = () => {
@@ -59,22 +59,17 @@ const Footer = () => {
           </div>
           
           <div className="text-center md:text-left">
-            <h4 className="font-semibold mb-3 md:mb-4 tracking-wide text-sm md:text-base">Account</h4>
+            <h4 className="font-semibold mb-3 md:mb-4 tracking-wide text-sm md:text-base">Contact</h4>
             <ul className="space-y-2 md:space-y-3">
               <li>
-                <Link to="/auth" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Sign In
-                </Link>
+                <a href="mailto:akashverma23644@gmail.com" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  akashverma23644@gmail.com
+                </a>
               </li>
               <li>
-                <Link to="/auth" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Create Account
-                </Link>
-              </li>
-              <li>
-                <Link to="/wishlist" className="text-muted-foreground hover:text-primary transition-colors text-sm">
-                  Wishlist
-                </Link>
+                <a href="tel:+917020466284" className="text-muted-foreground hover:text-primary transition-colors text-sm">
+                  +91 7020466284
+                </a>
               </li>
             </ul>
           </div>
@@ -104,14 +99,11 @@ const Footer = () => {
             © {new Date().getFullYear()} The Time Store. All rights reserved.
           </p>
           <div className="flex gap-6 order-1 md:order-2">
-            <a href="https://instagram.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
+            <a href="https://www.instagram.com/thetimestore_1/" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
               <Instagram className="h-5 w-5" />
             </a>
-            <a href="https://twitter.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-              <Twitter className="h-5 w-5" />
-            </a>
-            <a href="https://facebook.com" target="_blank" rel="noopener noreferrer" className="text-muted-foreground hover:text-primary transition-colors">
-              <Facebook className="h-5 w-5" />
+            <a href="mailto:akashverma23644@gmail.com" className="text-muted-foreground hover:text-primary transition-colors">
+              <Mail className="h-5 w-5" />
             </a>
           </div>
         </div>

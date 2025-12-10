@@ -17,18 +17,18 @@ const ContactPurchaseDialog = ({
     const subject = watchName 
       ? `Inquiry about ${watchName}` 
       : "Watch Purchase Inquiry";
-    window.location.href = `mailto:sales@thetimestore.com?subject=${encodeURIComponent(subject)}`;
+    window.location.href = `mailto:akashverma23644@gmail.com?subject=${encodeURIComponent(subject)}`;
   };
 
   const handlePhone = () => {
-    window.location.href = "tel:+1234567890";
+    window.location.href = "tel:+917020466284";
   };
 
   const handleWhatsApp = () => {
     const message = watchName 
       ? `Hi, I'm interested in purchasing the ${watchName}.` 
       : "Hi, I'm interested in purchasing a watch.";
-    window.open(`https://wa.me/1234567890?text=${encodeURIComponent(message)}`, "_blank");
+    window.open(`https://wa.me/917020466284?text=${encodeURIComponent(message)}`, "_blank");
   };
 
   return (
@@ -48,19 +48,19 @@ const ContactPurchaseDialog = ({
           <Button onClick={handleEmail} variant="outline" className="w-full justify-start">
             <Mail className="mr-3 h-5 w-5" />
             Email Us
-            <span className="ml-auto text-muted-foreground text-sm">sales@thetimestore.com</span>
+            <span className="ml-auto text-muted-foreground text-sm">akashverma23644@gmail.com</span>
           </Button>
           
           <Button onClick={handlePhone} variant="outline" className="w-full justify-start">
             <Phone className="mr-3 h-5 w-5" />
             Call Us
-            <span className="ml-auto text-muted-foreground text-sm">+1 (234) 567-890</span>
+            <span className="ml-auto text-muted-foreground text-sm">+91 7020466284</span>
           </Button>
           
           <Button onClick={handleWhatsApp} variant="outline" className="w-full justify-start">
             <MessageSquare className="mr-3 h-5 w-5" />
             WhatsApp
-            <span className="ml-auto text-muted-foreground text-sm">Chat with us</span>
+            <span className="ml-auto text-muted-foreground text-sm">+91 7020466284</span>
           </Button>
         </div>
         

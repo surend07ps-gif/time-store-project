@@ -9,19 +9,19 @@ const MobileFAB = () => {
     {
       icon: Phone,
       label: "Call",
-      href: "tel:+1234567890",
+      href: "tel:+917020466284",
       color: "bg-green-600 hover:bg-green-700",
     },
     {
       icon: MessageCircle,
       label: "WhatsApp",
-      href: "https://wa.me/1234567890",
+      href: "https://wa.me/917020466284",
       color: "bg-emerald-600 hover:bg-emerald-700",
     },
     {
       icon: Mail,
       label: "Email",
-      href: "mailto:contact@thetimestore.com",
+      href: "mailto:akashverma23644@gmail.com",
       color: "bg-blue-600 hover:bg-blue-700",
     },
   ];

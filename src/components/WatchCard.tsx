@@ -97,7 +97,7 @@ const WatchCard = ({
           <h3 className="font-display text-sm md:text-xl text-foreground line-clamp-1">{name}</h3>
           <p className="text-[10px] md:text-sm text-muted-foreground uppercase tracking-wider">{category}</p>
           <p className="text-sm md:text-lg font-semibold text-foreground">
-            ${price.toLocaleString()}
+            ₹{price.toLocaleString('en-IN')}
           </p>
         </div>
       </div>
