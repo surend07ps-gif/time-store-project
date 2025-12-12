@@ -15,7 +15,7 @@ const features = [
   {
     icon: Clock,
     title: "Heritage",
-    description: "40 years of excellence",
+    description: "4 years of excellence",
   },
   {
     icon: Sparkles,
