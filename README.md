@@ -74,6 +74,10 @@ See our complete beginner-friendly deployment guide: [DEPLOYMENT_GUIDE.md](DEPLO
 
 For an even more detailed guide with step-by-step instructions and screenshots: [SUPER_BEGINNER_DEPLOYMENT_GUIDE.md](SUPER_BEGINNER_DEPLOYMENT_GUIDE.md)
 
+### Troubleshooting Deployment Issues
+
+If your website isn't loading properly after deployment: [DEPLOYMENT_TROUBLESHOOTING.md](DEPLOYMENT_TROUBLESHOOTING.md)
+
 **Quick Deployment Steps:**
 
 1. Build the project using `npm run build`
