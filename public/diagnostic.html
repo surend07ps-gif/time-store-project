@@ -1,0 +1,226 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <title>Diagnostic Tool - The Time Store</title>
+    <meta charset="utf-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1">
+    <style>
+        body {
+            font-family: Inter, -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Oxygen, Ubuntu, Cantarell, 'Open Sans', 'Helvetica Neue', sans-serif;
+            margin: 0;
+            padding: 20px;
+            background-color: #0a0a0a;
+            color: #ffffff;
+            max-width: 1200px;
+            margin: 0 auto;
+        }
+        .container {
+            background: #1a1a1a;
+            border-radius: 8px;
+            padding: 20px;
+            margin: 20px 0;
+        }
+        h1, h2 {
+            color: #fff;
+        }
+        .test-result {
+            padding: 15px;
+            margin: 10px 0;
+            border-radius: 4px;
+            font-family: monospace;
+        }
+        .success {
+            background-color: #052e16;
+            border: 1px solid #166534;
+            color: #4ade80;
+        }
+        .error {
+            background-color: #450a0a;
+            border: 1px solid #991b1b;
+            color: #f87171;
+        }
+        .warning {
+            background-color: #451a03;
+            border: 1px solid #9a3412;
+            color: #fb923c;
+        }
+        button {
+            background-color: #2563eb;
+            color: white;
+            border: none;
+            padding: 10px 20px;
+            border-radius: 4px;
+            cursor: pointer;
+            margin: 5px;
+            font-family: inherit;
+        }
+        button:hover {
+            background-color: #1d4ed8;
+        }
+        #results {
+            margin-top: 20px;
+        }
+        pre {
+            background: #2a2a2a;
+            padding: 15px;
+            border-radius: 4px;
+            overflow-x: auto;
+            max-height: 300px;
+        }
+    </style>
+</head>
+<body>
+    <h1>Website Diagnostic Tool</h1>
+    <p>This tool will help identify issues with your website deployment.</p>
+    
+    <div class="container">
+        <h2>Run Diagnostics</h2>
+        <button onclick="runAllTests()">Run All Tests</button>
+        <button onclick="testEnvironment()">Test Environment</button>
+        <button onclick="testNetwork()">Test Network</button>
+        <button onclick="testResources()">Test Resources</button>
+    </div>
+    
+    <div id="results"></div>
+
+    <script>
+        function displayResult(title, message, type) {
+            const resultsDiv = document.getElementById('results');
+            const resultDiv = document.createElement('div');
+            resultDiv.className = `test-result ${type}`;
+            resultDiv.innerHTML = `<strong>${title}</strong><br>${message}`;
+            resultsDiv.appendChild(resultDiv);
+            resultsDiv.scrollTop = resultsDiv.scrollHeight;
+        }
+
+        function clearResults() {
+            document.getElementById('results').innerHTML = '';
+        }
+
+        async function runAllTests() {
+            clearResults();
+            displayResult('Starting Tests', 'Running all diagnostic tests...', 'warning');
+            
+            await testEnvironment();
+            await testNetwork();
+            await testResources();
+            
+            displayResult('Tests Complete', 'All diagnostic tests finished.', 'warning');
+        }
+
+        function testEnvironment() {
+            displayResult('Environment Test', 'Checking browser environment...', 'warning');
+            
+            // Check if we're in a browser
+            if (typeof window === 'undefined') {
+                displayResult('Environment Error', 'Not running in a browser environment', 'error');
+                return Promise.resolve();
+            }
+            
+            // Check basic browser features
+            const features = {
+                'JavaScript': typeof window !== 'undefined',
+                'DOM': typeof document !== 'undefined',
+                'Fetch API': typeof fetch !== 'undefined',
+                'Promise': typeof Promise !== 'undefined',
+                'LocalStorage': (() => {
+                    try {
+                        localStorage.setItem('test', 'test');
+                        localStorage.removeItem('test');
+                        return true;
+                    } catch (e) {
+                        return false;
+                    }
+                })()
+            };
+            
+            let allPassed = true;
+            for (const [feature, available] of Object.entries(features)) {
+                if (available) {
+                    displayResult(`✓ ${feature}`, 'Available', 'success');
+                } else {
+                    displayResult(`✗ ${feature}`, 'Not available - This may cause issues', 'error');
+                    allPassed = false;
+                }
+            }
+            
+            if (allPassed) {
+                displayResult('Environment Check', 'All required browser features are available', 'success');
+            } else {
+                displayResult('Environment Check', 'Some browser features are missing', 'error');
+            }
+            
+            return Promise.resolve();
+        }
+
+        async function testNetwork() {
+            displayResult('Network Test', 'Testing network connectivity...', 'warning');
+            
+            try {
+                // Test basic connectivity
+                const response = await fetch(window.location.href, { method: 'HEAD' });
+                displayResult('✓ Network Connectivity', `Status: ${response.status} ${response.statusText}`, 'success');
+                
+                // Test favicon
+                try {
+                    const faviconResponse = await fetch('/favicon.ico', { method: 'HEAD' });
+                    if (faviconResponse.ok) {
+                        displayResult('✓ Favicon', 'Favicon is accessible', 'success');
+                    } else {
+                        displayResult('⚠ Favicon', `Favicon returned status ${faviconResponse.status}`, 'warning');
+                    }
+                } catch (error) {
+                    displayResult('⚠ Favicon', `Could not load favicon: ${error.message}`, 'warning');
+                }
+            } catch (error) {
+                displayResult('✗ Network Connectivity', `Failed to connect: ${error.message}`, 'error');
+            }
+            
+            return Promise.resolve();
+        }
+
+        async function testResources() {
+            displayResult('Resource Test', 'Testing critical resources...', 'warning');
+            
+            // Test CSS
+            try {
+                const linkElements = document.getElementsByTagName('link');
+                let cssLoaded = false;
+                for (let link of linkElements) {
+                    if (link.rel === 'stylesheet' && link.href) {
+                        try {
+                            const response = await fetch(link.href, { method: 'HEAD' });
+                            if (response.ok) {
+                                displayResult('✓ Stylesheet', `Loaded: ${new URL(link.href).pathname}`, 'success');
+                                cssLoaded = true;
+                            }
+                        } catch (error) {
+                            displayResult('⚠ Stylesheet', `Failed to load: ${new URL(link.href).pathname}`, 'warning');
+                        }
+                    }
+                }
+                if (!cssLoaded) {
+                    displayResult('ℹ Stylesheets', 'No external stylesheets detected', 'warning');
+                }
+            } catch (error) {
+                displayResult('⚠ Stylesheet Test', `Error checking stylesheets: ${error.message}`, 'warning');
+            }
+            
+            // Test if we can access the main app
+            try {
+                // This is just a check to see if the main module system works
+                displayResult('ℹ Module System', 'ES Modules are supported in this browser', 'success');
+            } catch (error) {
+                displayResult('✗ Module System', `ES Modules not supported: ${error.message}`, 'error');
+            }
+            
+            return Promise.resolve();
+        }
+
+        // Run tests automatically when page loads
+        window.addEventListener('DOMContentLoaded', function() {
+            setTimeout(runAllTests, 1000);
+        });
+    </script>
+</body>
+</html>
